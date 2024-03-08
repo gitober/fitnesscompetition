@@ -1,25 +1,34 @@
-import { useLogin } from "../hooks/useLogin";
-import { useField } from "../hooks/useField";
+import useField from "../hooks/useField";
+import useLogin from "../hooks/useLogin";
+import { useNavigate } from "react-router-dom";
 
-//Login component
 const Login = () => {
-  // variables
-  const emailInput = useField("text");
-  const passwordInput = useField("password");
-  const email = emailInput.value;
-  const password = passwordInput.value;
-  const { handleLogin } = useLogin({ email, password });
+  const navigate = useNavigate();
+  const email = useField("email");
+  const password = useField("password");
+
+  const { login, isLoading, error } = useLogin("/api/users/login");
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    login({ email: email.value, password: password.value });
+    if (!error) {
+      console.log("success");
+      navigate("/");
+    }
+  };
+
   return (
-    <form className="login" onSubmit={handleLogin}>
-      <h3>Log In</h3>
-
-      <label>email:</label>
-      <input {...emailInput} />
-      <label>Password:</label>
-      <input {...passwordInput} />
-
-      <button>Log in</button>
-    </form>
+    <>
+      <form className="signup" onSubmit={handleFormSubmit}>
+        <h3>Login</h3>
+        <label>Email address:</label>
+        <input {...email} />
+        <label>Password:</label>
+        <input {...password} />
+        <button>Sign up</button>
+      </form>
+    </>
   );
 };
 

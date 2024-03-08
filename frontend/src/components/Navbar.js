@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const flag = false;
+  const navigate=useNavigate();
+  const flag = true;
   return (
     <header>
       <div className="container">
@@ -12,7 +13,7 @@ const Navbar = () => {
           {flag && (
             <div>
               <span>my.email@email.com</span>
-              <button>Log out</button>
+              <button onClick={()=>{localStorage.removeItem("user");localStorage.removeItem("token");navigate("/login")}}>Log out</button>
             </div>
           )}
           {!flag && (

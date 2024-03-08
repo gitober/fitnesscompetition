@@ -1,33 +1,28 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+export default function useLogin(url) {
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
+    const login = async (object) => {
+        setIsLoading(true);
+        setError(null);
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(object),
+        });
+        const user = await response.json();
+    
+        if (!response.ok) {
+          setError(user.error);
+          setIsLoading(false);
+          return error;
+        }
+    
+        localStorage.setItem("token", user.token);
+        localStorage.setItem("user", JSON.stringify(user));
+        setIsLoading(false);
+      };
 
-export const useLogin = ({ email, password }) => {
-  const navigate = useNavigate();
-  const apiUrl = "/api/users/login";
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("email", data.user.email);
-        localStorage.setItem("id", data.user._id);
-        navigate("/home");
-      } else {
-        const error = await response.json();
-        console.log(error);
-        alert("Invalid email or password");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  return { handleLogin, email, password };
-};
+      return { login, isLoading, error };
+}
