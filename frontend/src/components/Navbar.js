@@ -1,10 +1,7 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem("user"); // Check if the user is logged in
-
+  const flag = false;
   return (
     <header>
       <div className="container">
@@ -12,12 +9,13 @@ const Navbar = () => {
           <h1>Dashboard</h1>
         </Link>
         <nav>
-          {isLoggedIn ? (
+          {flag && (
             <div>
               <span>my.email@email.com</span>
-              <button onClick={() => { localStorage.removeItem("user"); localStorage.removeItem("token"); navigate("/login"); }}>Log out</button>
+              <button>Log out</button>
             </div>
-          ) : (
+          )}
+          {!flag && (
             <div>
               <Link to="/login">Login</Link>
               <Link to="/signup">Signup</Link>

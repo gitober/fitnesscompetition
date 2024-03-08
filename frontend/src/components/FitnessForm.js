@@ -1,80 +1,72 @@
-import { useState } from "react";
+import React from "react";
+import useField from "../hooks/useField"; // Import useField
 
-const FitnessForm = () => {
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [caloriesBurned, setCaloriesBurned] = useState("");
-  const [duration, setDuration] = useState("");
-  const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
+const FitnessForm = ({ setFitnessData }) => {
+  const apiUrl = "/api/fitness";
+  const titleInput = useField("text");
+  const DateInput = useField("text");
+  const caloriesBurnedInput = useField("text");
+  const durationInput = useField("text");
+  const user = localStorage.getItem("username");
 
-  const handleSubmit = async (e) => {
+  const handleFitness = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
 
+    // Check if the user is logged in before submitting the form
     if (!token) {
-      setError("You must be logged in");
+      console.error("You must be logged in to add fitness data");
       return;
     }
 
-    const fitness = { title, date, caloriesBurned, duration };
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          title: titleInput.value,
+          user,
+          date: DateInput.value,
+          caloriesBurned: caloriesBurnedInput.value,
+          duration: durationInput.value,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const response = await fetch("/api/fitness", {
-      method: "POST",
-      body: JSON.stringify(fitness),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const json = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to add fitness data");
+      }
 
-    if (!response.ok) {
-      setError(json.error);
-    }
-    if (response.ok) {
-      setTitle("");
-      setDuration("");
-      setCaloriesBurned("");
-      setDate("");
-      setError(null);
+      const newFitnessData = await response.json();
+      setFitnessData((prevData) => [...prevData, newFitnessData]);
 
+      // Clear the form fields
+      titleInput.onChange({ target: { value: "" } });
+      DateInput.onChange({ target: { value: "" } });
+      caloriesBurnedInput.onChange({ target: { value: "" } });
+      durationInput.onChange({ target: { value: "" } });
+    } catch (error) {
+      console.error("Error adding fitness:", error);
     }
   };
+
   return (
-    <form className="create" onSubmit={handleSubmit}>
-      <h3>Add a New fitness</h3>
+    <form className="create" onSubmit={handleFitness}>
+      <h3>Add a New Fitness</h3>
 
       <label>Title:</label>
-      <input
-        type="text"
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
-      />
-
+      <input {...titleInput} />
       <label>Date:</label>
-      <input
-        type="date"
-        onChange={(e) => setDate(e.target.value)}
-        value={date}
-      />
-
+      <input {...DateInput} />
       <label>Calories Burned:</label>
-      <input
-        type="number"
-        onChange={(e) => setCaloriesBurned(e.target.value)}
-        value={caloriesBurned}
-      />
-
+      <input {...caloriesBurnedInput} />
       <label>Duration:</label>
-      <input
-        type="number"
-        onChange={(e) => setDuration(e.target.value)}
-        value={duration}
-      />
-
-      <button>Add Fitness</button>
-      {error && <div className="error">{error}</div>}
+      <input {...durationInput} />
+      <button type="submit">Add Fitness</button>
     </form>
   );
 };
+
 export default FitnessForm;

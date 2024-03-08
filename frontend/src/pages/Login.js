@@ -1,4 +1,3 @@
-import React from "react";
 import useField from "../hooks/useField";
 import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +7,11 @@ const Login = () => {
   const email = useField("email");
   const password = useField("password");
 
-  const { login, error } = useLogin("/api/users/login");
+  const { login, isLoading, error } = useLogin("/api/users/login");
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    await login({ email: email.value, password: password.value });
-
+    login({ email: email.value, password: password.value });
     if (!error) {
       console.log("success");
       navigate("/");
@@ -22,13 +20,13 @@ const Login = () => {
 
   return (
     <>
-      <form className="login" onSubmit={handleFormSubmit}>
+      <form className="signup" onSubmit={handleFormSubmit}>
         <h3>Login</h3>
         <label>Email address:</label>
         <input {...email} />
         <label>Password:</label>
         <input {...password} />
-        <button type="submit">Log in</button>
+        <button>Sign up</button>
       </form>
     </>
   );
