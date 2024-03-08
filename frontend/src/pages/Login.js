@@ -1,12 +1,22 @@
+import { useLogin } from "../hooks/useLogin";
+import { useField } from "../hooks/useField";
+
+//Login component
 const Login = () => {
+  // variables
+  const emailInput = useField("text");
+  const passwordInput = useField("password");
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  const { handleLogin } = useLogin({ email, password });
   return (
-    <form className="login">
+    <form className="login" onSubmit={handleLogin}>
       <h3>Log In</h3>
 
-      <label>Username:</label>
-      <input type="rext" />
+      <label>email:</label>
+      <input {...emailInput} />
       <label>Password:</label>
-      <input type="password" />
+      <input {...passwordInput} />
 
       <button>Log in</button>
     </form>

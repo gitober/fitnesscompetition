@@ -1,28 +1,26 @@
+// imports
 import { useSignup } from "../hooks/useSignup";
 import { useField } from "../hooks/useField";
 
+// Signup component
 const Signup = () => {
-  const email = useField("email");
-  const password = useField("password");
-  // Add necessary code here
-  const { signup, error, isLoading } = useSignup();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await signup(email.value, password.value); // make necessary modification
-  };
-
+  // variables
+  const emailInput = useField("email");
+  const email = emailInput.value;
+  const passwordInput = useField("password");
+  const password = passwordInput.value;
+  const { handleSignup } = useSignup({
+    email,
+    password,
+  });
   return (
-    <form className="signup" onSubmit={handleSubmit}>
+    <form className="signup" onSubmit={handleSignup}>
       <h3>Sign Up</h3>
       <label>Email address:</label>
-      <input {...email} />
+      <input {...emailInput} />
       <label>Password:</label>
-      <input {...password} />
-      const password = useField("password");
-      {/* Add necessary code here */}
-      <button disabled={isLoading}>Sign up</button>
-      {error && <div className="error">{error}</div>}
+      <input {...passwordInput} />
+      <button>Sign up</button>
     </form>
   );
 };
