@@ -19,7 +19,7 @@ export const useLogin = ({ email, password }) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("email", data.user.email);
         localStorage.setItem("id", data.user._id);
-        navigate("/");
+        navigate("/home");
       } else {
         const error = await response.json();
         console.log(error);
