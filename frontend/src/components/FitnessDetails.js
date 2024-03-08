@@ -1,23 +1,22 @@
-// date fns
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-
-const fitnessDelete = (id) => {
-  const data =fetch(`/api/fitness/${id}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  });
-};
+import React from 'react';
+import useFitness from '../hooks/useFitness';
 
 const FitnessDetails = ({ fitness }) => {
+  const authToken = localStorage.getItem('token');
+  const { deleteFitness } = useFitness(authToken);
+
+  const handleDelete = () => {
+    deleteFitness(fitness._id);
+  };
+
   return (
     <div className="fitness-details">
       <h4>{fitness.title}</h4>
-      <p>
-        {formatDistanceToNow(new Date(fitness.date), { addSuffix: true })}
-      </p>
       <p>Duration: {fitness.duration}</p>
       <p>Calories Burned: {fitness.caloriesBurned}</p>
-      <span className="material-symbols-outlined" onClick={()=>{fitnessDelete(fitness._id)}}>delete</span>
+      <span className="material-symbols-outlined" onClick={handleDelete}>
+        delete
+      </span>
     </div>
   );
 };

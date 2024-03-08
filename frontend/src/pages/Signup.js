@@ -5,7 +5,7 @@ const Signup = () => {
   const email = useField("email");
   const password = useField("password");
 
-  const { signup, isLoading, error } = useSignup("/api/users/signup");
+  const { signup, error } = useSignup("/api/users/signup");
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
